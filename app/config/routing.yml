@@ -1,4 +1,0 @@
-uff_calculator:
-    resource: "@UffCalculatorBundle/Resources/config/routing.yml"
-    prefix:   /
-
