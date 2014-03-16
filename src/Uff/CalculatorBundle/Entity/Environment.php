@@ -265,6 +265,7 @@ class Environment
     /**
      * Remove instances
      *
+     * @param Instance $instances
      * @param \Uff\CalculatorBundle\Entity\Instance $instances
      */
     public function removeInstance(\Uff\CalculatorBundle\Entity\Instance $instances)
