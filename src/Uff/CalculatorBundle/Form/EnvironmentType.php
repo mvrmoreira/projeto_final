@@ -15,7 +15,6 @@ class EnvironmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('instances')
             ->add('maximumCost')
             ->add('minimumGflops')
             ->add('totalRAM')

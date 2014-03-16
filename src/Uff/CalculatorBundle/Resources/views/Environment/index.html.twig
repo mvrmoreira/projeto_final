@@ -21,7 +21,7 @@
         {% for entity in entities %}
             <tr>
                 <td><a href="{{ path('environment_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.instances }}</td>
+                <td></td>
                 <td>{{ entity.maximumCost }}</td>
                 <td>{{ entity.minimumGflops }}</td>
                 <td>{{ entity.totalRAM }}</td>
