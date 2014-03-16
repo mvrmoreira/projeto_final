@@ -1,5 +1,16 @@
 <?php
 
+/*
+#run all tests in the Utility directory
+$ phpunit -c app src/Acme/DemoBundle/Tests/Utility/
+
+# run tests for the Calculator class
+$ phpunit -c app src/Acme/DemoBundle/Tests/Utility/CalculatorTest.php
+
+# run all tests for the entire Bundle
+$ phpunit -c app src/Acme/DemoBundle/
+ */
+
 namespace Acme\DemoBundle\Tests\Utility;
 
 use Acme\DemoBundle\Utility\Calculator;
