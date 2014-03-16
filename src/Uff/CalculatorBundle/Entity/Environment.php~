@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Environment
  *
- * @ORM\Table(name="environment")
+ * @ORM\Table()
  * @ORM\Entity(repositoryClass="Uff\CalculatorBundle\Entity\EnvironmentRepository")
  */
 class Environment
@@ -31,42 +31,42 @@ class Environment
     /**
      * @var string
      *
-     * @ORM\Column(name="maximum_cost", type="decimal")
+     * @ORM\Column(name="maximumCost", type="decimal")
      */
     private $maximumCost;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="minimum_gflops", type="bigint")
+     * @ORM\Column(name="minimumGflops", type="bigint")
      */
     private $minimumGflops;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="total_ram", type="float")
+     * @ORM\Column(name="totalRAM", type="float")
      */
     private $totalRAM;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="maximum_disk", type="float")
+     * @ORM\Column(name="maximumDisk", type="float")
      */
     private $maximumDisk;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="maximum_time", type="integer")
+     * @ORM\Column(name="maximumTime", type="integer")
      */
     private $maximumTime;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="maximum_instances", type="integer")
+     * @ORM\Column(name="maximumInstances", type="integer")
      */
     private $maximumInstances;
 
@@ -240,35 +240,5 @@ class Environment
     public function getMaximumInstances()
     {
         return $this->maximumInstances;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->instances = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add instances
-     *
-     * @param \Uff\CalculatorBundle\Entity\Instance $instances
-     * @return Environment
-     */
-    public function addInstance(\Uff\CalculatorBundle\Entity\Instance $instances)
-    {
-        $this->instances[] = $instances;
-
-        return $this;
-    }
-
-    /**
-     * Remove instances
-     *
-     * @param \Uff\CalculatorBundle\Entity\Instance $instances
-     */
-    public function removeInstance(\Uff\CalculatorBundle\Entity\Instance $instances)
-    {
-        $this->instances->removeElement($instances);
     }
 }
