@@ -1,0 +1,30 @@
+environment:
+    pattern:  /
+    defaults: { _controller: "UffCalculatorBundle:Environment:index" }
+
+environment_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UffCalculatorBundle:Environment:show" }
+
+environment_new:
+    pattern:  /new
+    defaults: { _controller: "UffCalculatorBundle:Environment:new" }
+
+environment_create:
+    pattern:  /create
+    defaults: { _controller: "UffCalculatorBundle:Environment:create" }
+    requirements: { _method: post }
+
+environment_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UffCalculatorBundle:Environment:edit" }
+
+environment_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UffCalculatorBundle:Environment:update" }
+    requirements: { _method: post|put }
+
+environment_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UffCalculatorBundle:Environment:delete" }
+    requirements: { _method: post|delete }

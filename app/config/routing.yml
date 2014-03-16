@@ -2,3 +2,6 @@ uff_calculator:
     resource: "@UffCalculatorBundle/Resources/config/routing.yml"
     prefix:   /
 
+UffCalculatorBundle_environment:
+    resource: "@UffCalculatorBundle/Resources/config/routing/environment.yml"
+    prefix:   /environment

@@ -1,0 +1,56 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Environment</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Instances</th>
+                <td>{{ entity.instances }}</td>
+            </tr>
+            <tr>
+                <th>Maximumcost</th>
+                <td>{{ entity.maximumCost }}</td>
+            </tr>
+            <tr>
+                <th>Minimumgflops</th>
+                <td>{{ entity.minimumGflops }}</td>
+            </tr>
+            <tr>
+                <th>Totalram</th>
+                <td>{{ entity.totalRAM }}</td>
+            </tr>
+            <tr>
+                <th>Maximumdisk</th>
+                <td>{{ entity.maximumDisk }}</td>
+            </tr>
+            <tr>
+                <th>Maximumtime</th>
+                <td>{{ entity.maximumTime }}</td>
+            </tr>
+            <tr>
+                <th>Maximuminstances</th>
+                <td>{{ entity.maximumInstances }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('environment') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('environment_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
