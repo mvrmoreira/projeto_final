@@ -1,3 +1,11 @@
 uff_calculator_homepage:
     pattern:  /hello/{name}
     defaults: { _controller: UffCalculatorBundle:Default:index }
+
+UffCalculatorBundle_environment:
+    resource: "@UffCalculatorBundle/Resources/config/routing/environment.yml"
+    prefix:   /environment
+
+UffCalculatorBundle_instance:
+    resource: "@UffCalculatorBundle/Resources/config/routing/instance.yml"
+    prefix:   /instance
