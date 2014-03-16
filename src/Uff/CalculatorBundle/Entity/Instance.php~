@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Instance
  *
- * @ORM\Table()
+ * @ORM\Table(name="instance")
  * @ORM\Entity(repositoryClass="Uff\CalculatorBundle\Entity\InstanceRepository")
  */
 class Instance
@@ -126,5 +126,28 @@ class Instance
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Uff\CalculatorBundle\Entity\Environment $category
+     * @return Instance
+     */
+    public function setCategory(\Uff\CalculatorBundle\Entity\Environment $category = null)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \Uff\CalculatorBundle\Entity\Environment 
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 }

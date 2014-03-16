@@ -72,6 +72,48 @@ class Environment
 
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->instances = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add instances
+     *
+     * @param \Uff\CalculatorBundle\Entity\Instance $instances
+     * @return Environment
+     */
+    public function addInstance(\Uff\CalculatorBundle\Entity\Instance $instances)
+    {
+        $this->instances[] = $instances;
+
+        return $this;
+    }
+
+    /**
+     * Remove instances
+     *
+     * @param Instance $instances
+     * @param \Uff\CalculatorBundle\Entity\Instance $instances
+     */
+    public function removeInstance(\Uff\CalculatorBundle\Entity\Instance $instances)
+    {
+        $this->instances->removeElement($instances);
+    }
+
+    /**
+     * Get instances
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInstances()
+    {
+        return $this->instances;
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -79,29 +121,6 @@ class Environment
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set instances
-     *
-     * @param integer $instances
-     * @return Environment
-     */
-    public function setInstances($instances)
-    {
-        $this->instances = $instances;
-
-        return $this;
-    }
-
-    /**
-     * Get instances
-     *
-     * @return integer 
-     */
-    public function getInstances()
-    {
-        return $this->instances;
     }
 
     /**
@@ -235,41 +254,11 @@ class Environment
     /**
      * Get maximumInstances
      *
-     * @return integer 
+     * @return integer
+     * @return int
      */
     public function getMaximumInstances()
     {
         return $this->maximumInstances;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->instances = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add instances
-     *
-     * @param \Uff\CalculatorBundle\Entity\Instance $instances
-     * @return Environment
-     */
-    public function addInstance(\Uff\CalculatorBundle\Entity\Instance $instances)
-    {
-        $this->instances[] = $instances;
-
-        return $this;
-    }
-
-    /**
-     * Remove instances
-     *
-     * @param Instance $instances
-     * @param \Uff\CalculatorBundle\Entity\Instance $instances
-     */
-    public function removeInstance(\Uff\CalculatorBundle\Entity\Instance $instances)
-    {
-        $this->instances->removeElement($instances);
     }
 }
