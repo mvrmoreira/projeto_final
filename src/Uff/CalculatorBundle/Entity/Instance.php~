@@ -25,7 +25,7 @@ class Instance
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="instances")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
-    protected $category;
+    protected $environment;
 
     /**
      * @var float
