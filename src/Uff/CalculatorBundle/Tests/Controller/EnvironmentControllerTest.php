@@ -18,6 +18,7 @@ class EnvironmentControllerTest extends WebTestCase
 
         // Fill in the form and submit it
         $form = $crawler->selectButton('Create')->form(array(
+            'uff_calculatorbundle_environment[name]'  => 'Matheus Moreira',
             'uff_calculatorbundle_environment[maximumCost]'  => '1950',
             'uff_calculatorbundle_environment[minimumGflops]'  => '28792800',
             'uff_calculatorbundle_environment[totalRAM]'  => '213.5',

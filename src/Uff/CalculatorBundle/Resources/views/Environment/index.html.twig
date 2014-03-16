@@ -7,6 +7,7 @@
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Name</th>
                 <th>Instances</th>
                 <th>Maximumcost</th>
                 <th>Minimumgflops</th>
@@ -21,6 +22,7 @@
         {% for entity in entities %}
             <tr>
                 <td><a href="{{ path('environment_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
                 <td></td>
                 <td>{{ entity.maximumCost }}</td>
                 <td>{{ entity.minimumGflops }}</td>

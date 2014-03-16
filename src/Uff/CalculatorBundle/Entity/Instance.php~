@@ -129,25 +129,25 @@ class Instance
     }
 
     /**
-     * Set category
+     * Set environment
      *
-     * @param \Uff\CalculatorBundle\Entity\Environment $category
+     * @param \Uff\CalculatorBundle\Entity\Environment $environment
      * @return Instance
      */
-    public function setCategory(\Uff\CalculatorBundle\Entity\Environment $category = null)
+    public function setEnvironment(\Uff\CalculatorBundle\Entity\Environment $environment = null)
     {
-        $this->category = $category;
+        $this->environment = $environment;
 
         return $this;
     }
 
     /**
-     * Get category
+     * Get environment
      *
      * @return \Uff\CalculatorBundle\Entity\Environment 
      */
-    public function getCategory()
+    public function getEnvironment()
     {
-        return $this->category;
+        return $this->environment;
     }
 }

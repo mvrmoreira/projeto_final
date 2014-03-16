@@ -31,6 +31,13 @@ class Environment
     /**
      * @var string
      *
+     * @ORM\Column(name="name", type="string")
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="maximum_cost", type="decimal")
      */
     private $maximumCost;
@@ -77,6 +84,14 @@ class Environment
     public function __construct()
     {
         $this->instances = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    function __toString()
+    {
+        return 'Moreira';
     }
 
     /**

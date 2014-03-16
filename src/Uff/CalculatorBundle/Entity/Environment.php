@@ -31,6 +31,13 @@ class Environment
     /**
      * @var string
      *
+     * @ORM\Column(name="name", type="string")
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="maximum_cost", type="decimal")
      */
     private $maximumCost;
@@ -80,6 +87,14 @@ class Environment
     }
 
     /**
+     * @return string
+     */
+    function __toString()
+    {
+        return 'Moreira';
+    }
+
+    /**
      * Add instances
      *
      * @param \Uff\CalculatorBundle\Entity\Instance $instances
@@ -116,11 +131,34 @@ class Environment
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Environment
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
