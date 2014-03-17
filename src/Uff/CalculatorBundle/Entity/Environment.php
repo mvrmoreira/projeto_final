@@ -38,7 +38,7 @@ class Environment
     /**
      * @var string
      *
-     * @ORM\Column(name="maximum_cost", type="decimal")
+     * @ORM\Column(name="maximum_cost", type="decimal", scale=2))
      */
     private $maximumCost;
 
