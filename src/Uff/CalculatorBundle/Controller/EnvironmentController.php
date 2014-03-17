@@ -101,11 +101,15 @@ class EnvironmentController extends Controller
             throw $this->createNotFoundException('Unable to find Environment entity.');
         }
 
+        $instances = $entity->getInstances();
+
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UffCalculatorBundle:Environment:show.html.twig', array(
             'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'delete_form' => $deleteForm->createView(),
+            'instances'   => $instances
+        ));
     }
 
     /**

@@ -40,17 +40,26 @@
         </tbody>
     </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('environment') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('environment_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('instance_new') }}">
+                Add a instance
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('environment') }}">
+                Back to the list
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('environment_edit', { 'id': entity.id }) }}">
+                Edit
+            </a>
+        </li>
+        <li>{{ form(delete_form) }}</li>
+    </ul>
+
+    {{ include('UffCalculatorBundle:Instance:index.html.twig', {'entities': instances}) }}
+
+
 {% endblock %}
