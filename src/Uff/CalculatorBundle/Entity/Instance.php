@@ -58,7 +58,7 @@ class Instance
     /**
      * @var string
      *
-     * @ORM\Column(name="price", type="decimal", scale=2))
+     * @ORM\Column(name="price", type="decimal", scale=2)
      */
     private $price;
 
