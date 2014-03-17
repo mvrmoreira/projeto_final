@@ -17,9 +17,9 @@ class InstanceType extends AbstractType
         $builder
             ->add('gflops')
             ->add('ram')
-            ->add('price')
             ->add('plataform')
             ->add('disk')
+            ->add('price')
             ->add('environment')
         ;
     }
