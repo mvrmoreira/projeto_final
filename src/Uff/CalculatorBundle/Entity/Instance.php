@@ -42,6 +42,20 @@ class Instance
     private $ram;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="plataform", type="integer")
+     */
+    private $plataform;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="disk", type="integer")
+     */
+    private $disk;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="price", type="decimal")
@@ -103,6 +117,52 @@ class Instance
     public function getRam()
     {
         return $this->ram;
+    }
+
+    /**
+     * Set plataform
+     *
+     * @param integer $plataform
+     * @return Instance
+     */
+    public function setPlataform($plataform)
+    {
+        $this->plataform = $plataform;
+
+        return $this;
+    }
+
+    /**
+     * Get plataform
+     *
+     * @return integer
+     */
+    public function getPlataform()
+    {
+        return $this->plataform;
+    }
+
+    /**
+     * Set disk
+     *
+     * @param integer $disk
+     * @return Instance
+     */
+    public function setDisk($disk)
+    {
+        $this->disk = $disk;
+
+        return $this;
+    }
+
+    /**
+     * Get disk
+     *
+     * @return integer
+     */
+    public function getDisk()
+    {
+        return $this->disk;
     }
 
     /**

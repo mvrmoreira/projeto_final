@@ -42,6 +42,20 @@ class Instance
     private $ram;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="plataform", type="integer")
+     */
+    private $plataform;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="disk", type="integer")
+     */
+    private $disk;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="price", type="decimal")
