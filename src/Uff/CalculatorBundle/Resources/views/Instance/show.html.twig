@@ -3,7 +3,7 @@
 {% block body -%}
     <h1>Instance</h1>
 
-    <table class="record_properties">
+    <table class="table table-striped table-hover table-condensed">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -11,14 +11,14 @@
             </tr>
             <tr>
                 <th>Environment</th>
-                <td>{{ entity.environment }}</td>
+                <td><a href="{{ path('environment_show', { 'id': entity.environment.id }) }}">{{ entity.environment.name }}</a></td>
             </tr>
             <tr>
                 <th>Gflops</th>
                 <td>{{ entity.gflops }}</td>
             </tr>
             <tr>
-                <th>Ram</th>
+                <th>RAM</th>
                 <td>{{ entity.ram }}</td>
             </tr>
             <tr>

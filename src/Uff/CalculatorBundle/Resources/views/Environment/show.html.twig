@@ -3,7 +3,7 @@
 {% block body -%}
     <h1>Environment</h1>
 
-    <table class="record_properties">
+    <table class="table table-striped table-hover table-condensed">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -14,27 +14,27 @@
                 <td>{{ entity.name }}</td>
             </tr>
             <tr>
-                <th>Maximumcost</th>
-                <td>{{ entity.maximumCost }}</td>
+                <th>Maximum Cost</th>
+                <td>$ {{ entity.maximumCost }}</td>
             </tr>
             <tr>
-                <th>Minimumgflops</th>
+                <th>Minimum Gflops</th>
                 <td>{{ entity.minimumGflops }}</td>
             </tr>
             <tr>
-                <th>Totalram</th>
-                <td>{{ entity.totalRAM }}</td>
+                <th>Total RAM</th>
+                <td>{{ entity.totalRAM }} GBs</td>
             </tr>
             <tr>
-                <th>Maximumdisk</th>
-                <td>{{ entity.maximumDisk }}</td>
+                <th>Maximum Disk</th>
+                <td>{{ entity.maximumDisk }} GBs</td>
             </tr>
             <tr>
-                <th>Maximumtime</th>
-                <td>{{ entity.maximumTime }}</td>
+                <th>Maximum Time</th>
+                <td>{{ entity.maximumTime }} hours</td>
             </tr>
             <tr>
-                <th>Maximuminstances</th>
+                <th>Maximum Instances</th>
                 <td>{{ entity.maximumInstances }}</td>
             </tr>
         </tbody>
