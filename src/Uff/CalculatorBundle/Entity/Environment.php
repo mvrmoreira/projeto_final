@@ -91,7 +91,7 @@ class Environment
      */
     function __toString()
     {
-        return 'Moreira';
+        return $this->getName();
     }
 
     /**
