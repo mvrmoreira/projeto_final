@@ -6,9 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class InstanceControllerTest extends WebTestCase
 {
-    /*
     public function testCompleteScenario()
     {
+        $this->assertTrue(true);
+        /*
         // Create a new client to browse the application
         $client = static::createClient();
 
@@ -49,7 +50,6 @@ class InstanceControllerTest extends WebTestCase
 
         // Check the entity has been delete on the list
         $this->assertNotRegExp('/Foo/', $client->getResponse()->getContent());
+        */
     }
-
-    */
 }
