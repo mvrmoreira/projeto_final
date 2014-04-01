@@ -1,0 +1,44 @@
+# - the available packages:
+
+# the package types number
+package {{ instances.count }}
+
+# Gflops of each package type
+Gflops {% for instance in instances %}{{ instance.gflops }} {% endfor %}
+
+
+# GBs of RAM of each package type
+ram {% for instance in instances %}{{ instance.ram }} {% endfor %}
+
+
+# the plataform type
+plataform {% for instance in instances %}{{ instance.plataform }} {% endfor %}
+
+
+# GBs of disk (HD) of each package type
+disk {% for instance in instances %}{{ instance.disk }} {% endfor %}
+
+
+# the price per time unit of each package type
+price {% for instance in instances %}{{ instance.price }} {% endfor %}
+
+
+# - the client requirements:
+
+# the maximum cost that the client can pay
+C {{ entity.maximumCost }}
+
+# the minimum Gflops that the client's aplication need
+F {{ entity.minimumGflops }}
+
+# the total RAM memory (GBs) that the client's aplication need
+M {{ entity.totalRAM }}
+
+# the maximum disk capacity (GBs) that the client's aplication need
+D {{ entity.maximumDisk }}
+
+# the maximum time (per time unit:hour)
+T {{ entity.maximumTime }}
+
+# the maximum package number that it can be utilized
+P {{ entity.maximumInstances }}

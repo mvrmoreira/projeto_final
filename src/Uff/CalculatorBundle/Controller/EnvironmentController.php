@@ -3,6 +3,7 @@
 namespace Uff\CalculatorBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Uff\CalculatorBundle\Entity\Environment;
@@ -110,6 +111,33 @@ class EnvironmentController extends Controller
             'delete_form' => $deleteForm->createView(),
             'instances'   => $instances
         ));
+    }
+
+    /**
+     * Calculated according to the heuristic
+     *
+     */
+    public function calculateAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('UffCalculatorBundle:Environment')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Environment entity.');
+        }
+
+        $instances = $entity->getInstances();
+
+        $heuristic_input = $this->renderView('UffCalculatorBundle:Environment:heuristic_input.txt.twig', array(
+            'entity'      => $entity,
+            'instances'   => $instances
+        ));
+
+        $filesystem = new Filesystem();
+        $filesystem->touch('instance.txt');
+
+        echo $heuristic_input; die();
     }
 
     /**

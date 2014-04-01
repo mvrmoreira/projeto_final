@@ -28,3 +28,7 @@ environment_delete:
     pattern:  /{id}/delete
     defaults: { _controller: "UffCalculatorBundle:Environment:delete" }
     requirements: { _method: post|delete }
+
+environment_calculate:
+    pattern:  /{id}/calculate
+    defaults: { _controller: "UffCalculatorBundle:Environment:calculate" }
