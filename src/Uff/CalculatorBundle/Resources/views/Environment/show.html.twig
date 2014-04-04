@@ -42,6 +42,11 @@
 
     <ul class="record_actions">
         <li>
+            <a href="{{ path('environment_calculate', { 'id': entity.id }) }}">
+                Run GraspCC Heuristic
+            </a>
+        </li>
+        <li>
             <a href="{{ path('instance_new') }}">
                 Add a instance
             </a>

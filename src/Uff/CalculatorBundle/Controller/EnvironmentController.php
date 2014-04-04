@@ -115,7 +115,7 @@ class EnvironmentController extends Controller
 
     /**
      * Calculated according to the heuristic
-     *
+     * TODO: refact the execute of heuristic
      */
     public function calculateAction($id)
     {
@@ -134,10 +134,29 @@ class EnvironmentController extends Controller
             'instances'   => $instances
         ));
 
+        # config
         $filesystem = new Filesystem();
-        $filesystem->touch('instance.txt');
+        $heuristic_dir = __DIR__.'/../../../../heuristic/';
+        $heuristic_filename = 'GraspCC';
+        $input_dir = '/tmp/';
+        $input_filename = sha1(time().microtime(true)).'.txt';
 
-        echo $heuristic_input; die();
+        # write input text file
+        $filesystem->dumpFile($input_dir.$input_filename, $heuristic_input);
+
+        # execute de heuristic
+        $cmd = $heuristic_dir.$heuristic_filename.' '.$input_dir.$input_filename.' 0.5 0.5';
+        $return = exec($cmd, $output, $return_var);
+
+        # delete the input file
+        $filesystem->remove($input_dir.$input_filename);
+
+        # show output
+        return $this->render('UffCalculatorBundle:Environment:heuristic_output.html.twig', array(
+            'entity'      => $entity,
+            'instances'   => $instances,
+            'output'      => $output
+        ));
     }
 
     /**

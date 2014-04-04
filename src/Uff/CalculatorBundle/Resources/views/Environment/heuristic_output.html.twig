@@ -1,0 +1,19 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>GraspCC Heuristc Result</h1>
+
+    <ul>
+        <li>
+            <a href="{{ path('environment_show', { 'id': entity.id }) }}">back to environment</a>
+        </li>
+        <li>
+            <a href="{{ path('environment_calculate', { 'id': entity.id }) }}">calculate again</a>
+        </li>
+    </ul>
+
+    {% for line in output %}
+        <p>{{ line }}</p>
+    {% endfor %}
+
+{% endblock %}
