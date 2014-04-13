@@ -36,7 +36,8 @@ class InstanceController extends Controller
     public function createAction(Request $request)
     {
         $entity = new Instance();
-        $form = $this->createCreateForm($entity);
+        $awsPricing = $this->getAWSPricing();
+        $form = $this->createCreateForm($entity, $awsPricing);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -50,19 +51,40 @@ class InstanceController extends Controller
         return $this->render('UffCalculatorBundle:Instance:new.html.twig', array(
             'entity' => $entity,
             'form'   => $form->createView(),
+            'awsPricing' => $awsPricing,
         ));
     }
 
     /**
-    * Creates a form to create a Instance entity.
-    *
-    * @param Instance $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createCreateForm(Instance $entity)
+     * @return mixed
+     */
+    private function getAWSPricing()
     {
-        $form = $this->createForm(new InstanceType(), $entity, array(
+        $subject = file_get_contents('http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js');
+        $pattern = '/callback\((.+)\);/';
+        preg_match($pattern, $subject, $matches);
+        $pricing = $matches[1];
+        $pricing = str_replace(',', ',"', $pricing);
+        $pricing = str_replace(':', '":', $pricing);
+        $pricing = str_replace('{', '{"', $pricing);
+        $pricing = str_replace('""', '"', $pricing);
+        $pricing = str_replace(',"{', ',{', $pricing);
+        $pricing = json_decode($pricing);
+
+        return $pricing->config->regions[7]->instanceTypes;
+    }
+
+    /**
+     * Creates a form to create a Instance entity.
+     *
+     * @param Instance $entity The entity
+     *
+     * @param $awsPricing
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createCreateForm(Instance $entity, $awsPricing = null)
+    {
+        $form = $this->createForm(new InstanceType($awsPricing), $entity, array(
             'action' => $this->generateUrl('instance_create'),
             'method' => 'POST',
         ));
@@ -79,10 +101,12 @@ class InstanceController extends Controller
     public function newAction()
     {
         $entity = new Instance();
-        $form   = $this->createCreateForm($entity);
+        $awsPricing = $this->getAWSPricing();
+        $form   = $this->createCreateForm($entity, $awsPricing);
 
         return $this->render('UffCalculatorBundle:Instance:new.html.twig', array(
             'entity' => $entity,
+            'awsPricing' => $awsPricing,
             'form'   => $form->createView(),
         ));
     }

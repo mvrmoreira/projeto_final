@@ -14,4 +14,33 @@
             </a>
         </li>
     </ul>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+<script>
+$(function(){
+
+    {% for instanceTypes in awsPricing %}
+        {% for instance in instanceTypes.sizes %}
+            $("#uff_calculatorbundle_instance_aws option[value='{{ instance.size }}']").data({
+                vCPU: "{{ instance.vCPU }}",
+                ECU: "{{ instance.ECU }}",
+                memoryGiB: "{{ instance.memoryGiB }}",
+                storageGB: "{{ instance.storageGB }}",
+                price: "{{ instance.valueColumns[0].prices.USD }}"
+            });
+        {% endfor %}
+    {% endfor %}
+
+    $("#uff_calculatorbundle_instance_aws").change(function(){
+        var instance = $(this).find(":selected").data();
+        $("#uff_calculatorbundle_instance_ram").val(instance.memoryGiB);
+        $("#uff_calculatorbundle_instance_price").val(instance.price);
+    });
+});
+</script>
 {% endblock %}

@@ -188,6 +188,9 @@ class Instance
         return $this->price;
     }
 
+    public function getAws(){}
+    public function setAws(){}
+
     /**
      * Set environment
      *
