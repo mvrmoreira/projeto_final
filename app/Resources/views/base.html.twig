@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-            {% stylesheets '@UffCalculatorBundle/Resources/public/css/*' %}
-                <link rel="stylesheet" href="{{ asset_url }}" />
-            {% endstylesheets %}
+            <link href="{{ asset('bundles/uffcalculator/css/bootstrap.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/uffcalculator/css/bootstrap-theme.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/uffcalculator/css/starter-template.css') }}" rel="stylesheet">
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
@@ -37,7 +37,8 @@
         <div class="container">{% block body %}{% endblock %}</div>
         {% block javascripts %}
             {% javascripts '@UffCalculatorBundle/Resources/public/js/*' %}
-                <script type="text/javascript" src="{{ asset_url }}"></script>
+            <script src="{{ asset('bundles/uffcalculator/js/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
+            <script src="{{ asset('bundles/uffcalculator/js/bootstrap.min.js') }}" type="text/javascript"></script>
             {% endjavascripts %}
         {% endblock %}
     </body>
