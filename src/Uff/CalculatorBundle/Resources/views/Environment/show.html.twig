@@ -40,6 +40,8 @@
         </tbody>
     </table>
 
+    {{ include('UffCalculatorBundle:Environment:heuristic_output.html.twig', {'instances': instances, 'output': output}) }}
+
     <ul class="record_actions">
         <li>
             <a href="{{ path('environment') }}">
@@ -56,8 +58,6 @@
         </li>
         <li>{{ form(delete_form) }}</li>
     </ul>
-
-    {{ include('UffCalculatorBundle:Environment:heuristic_output.html.twig', {'instances': instances, 'output': output}) }}
 
 
 {% endblock %}

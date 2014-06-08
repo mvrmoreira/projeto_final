@@ -236,6 +236,7 @@ class EnvironmentController extends Controller
                     if (in_array($instance_size->size, $instance_sizes))
                     {
                         $instance = new Instance();
+                        $instance->setName($instance_size->size);
                         $instance->setRam($instance_size->memoryGiB);
                         $instance->setPrice($instance_size->valueColumns[0]->prices->USD);
                         $instance->setGflops($this->getGflopsByInstanceSize($instance_size->size));
