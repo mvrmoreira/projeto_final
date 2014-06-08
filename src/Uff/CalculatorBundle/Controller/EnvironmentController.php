@@ -48,7 +48,7 @@ class EnvironmentController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('environment_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('environment_choose_aws_ec2_instances', array('id' => $entity->getId())));
         }
 
         return $this->render('UffCalculatorBundle:Environment:new.html.twig', array(
