@@ -42,16 +42,6 @@
 
     <ul class="record_actions">
         <li>
-            <a href="{{ path('environment_calculate', { 'id': entity.id }) }}">
-                Run GraspCC Heuristic
-            </a>
-        </li>
-        <li>
-            <a href="{{ path('instance_new') }}">
-                Add a instance
-            </a>
-        </li>
-        <li>
             <a href="{{ path('environment') }}">
                 Back to the list
             </a>
@@ -61,10 +51,13 @@
                 Edit
             </a>
         </li>
+        <li>
+            <a href="{{ path('environment_choose_aws_ec2_instances', { 'id': entity.id }) }}">Edit instances</a>
+        </li>
         <li>{{ form(delete_form) }}</li>
     </ul>
 
-    {{ include('UffCalculatorBundle:Instance:index.html.twig', {'entities': instances}) }}
+    {{ include('UffCalculatorBundle:Environment:heuristic_output.html.twig', {'instances': instances, 'output': output}) }}
 
 
 {% endblock %}

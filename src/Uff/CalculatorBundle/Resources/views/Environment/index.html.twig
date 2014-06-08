@@ -31,13 +31,13 @@
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('environment_calculate', { 'id': entity.id }) }}">calculate</a>
-                    </li>
-                    <li>
                         <a href="{{ path('environment_show', { 'id': entity.id }) }}">show</a>
                     </li>
                     <li>
                         <a href="{{ path('environment_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('environment_choose_aws_ec2_instances', { 'id': entity.id }) }}">edit instances</a>
                     </li>
                 </ul>
                 </td>

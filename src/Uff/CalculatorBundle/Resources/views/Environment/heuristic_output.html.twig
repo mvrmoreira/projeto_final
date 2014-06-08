@@ -1,19 +1,39 @@
-{% extends '::base.html.twig' %}
-
 {% block body -%}
     <h1>GraspCC Heuristc Result</h1>
 
-    <ul>
-        <li>
-            <a href="{{ path('environment_show', { 'id': entity.id }) }}">back to environment</a>
-        </li>
-        <li>
-            <a href="{{ path('environment_calculate', { 'id': entity.id }) }}">calculate again</a>
-        </li>
-    </ul>
+    <table class="table table-striped table-hover table-condensed">
+        <thead>
+        <tr>
+            <th>Package</th>
+            <th>Gflops</th>
+            <th>RAM</th>
+            <th>Plataform</th>
+            <th>Disk</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for entity in instances %}
+            <tr>
+                <td>{{ loop.index - 1  }}</td>
+                <td>{{ entity.gflops }}</td>
+                <td>{{ entity.ram }}</td>
+                <td>{{ entity.plataform }}</td>
+                <td>{{ entity.disk }}</td>
+                <td>{{ entity.price }}</td>
+                <td>{{ entity.quantity }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-    {% for line in output %}
-        <p>{{ line }}</p>
-    {% endfor %}
+    <p>
+        <b>Best maximum time:</b> {{ output.best_maximum_time }} hours
+    </p>
+
+    <p>
+        <b>Best monetary cost:</b> ${{ output.best_monetary_cost }}
+    </p>
 
 {% endblock %}

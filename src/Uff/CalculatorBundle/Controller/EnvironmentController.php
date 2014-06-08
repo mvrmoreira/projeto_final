@@ -109,10 +109,39 @@ class EnvironmentController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
 
+        $heuristic_input = $this->renderView('UffCalculatorBundle:Environment:heuristic_input.txt.twig', array(
+            'entity'      => $entity,
+            'instances'   => $instances
+        ));
+
+        # config
+        $filesystem = new Filesystem();
+        $heuristic_dir = __DIR__.'/../../../../heuristic/';
+        $heuristic_filename = 'GraspCC';
+        $input_dir = '/tmp/';
+        $input_filename = sha1(time().microtime(true)).'.txt';
+
+        # write input text file
+        $filesystem->dumpFile($input_dir.$input_filename, $heuristic_input);
+
+        # execute de heuristic
+        $cmd = $heuristic_dir.$heuristic_filename.' '.$input_dir.$input_filename.' 0.5 0.5';
+        $return = exec($cmd, $output, $return_var);
+
+        # parse output
+        $parsed_output = $this->parseHeuristicOutput($output);
+
+        # delete the input file
+        $filesystem->remove($input_dir.$input_filename);
+
+        #
+        $instances = $this->parseAllResultData($instances, $parsed_output);
+
         return $this->render('UffCalculatorBundle:Environment:show.html.twig', array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
-            'instances'   => $instances
+            'instances'   => $instances,
+            'output'      => $parsed_output,
         ));
     }
 
@@ -189,7 +218,7 @@ class EnvironmentController extends Controller
 
         if ($request->getMethod() == 'POST')
         {
-            $instances_quantity = $request->request->get('instances');
+            $instance_sizes = $request->request->get('instances');
 
             // delete previous instances
             $instances = $em->getRepository('UffCalculatorBundle:Instance')->findBy(array('environment' => $id));
@@ -204,9 +233,7 @@ class EnvironmentController extends Controller
             {
                 foreach ($instance_type->sizes as $instance_size)
                 {
-                    $quantity = $instances_quantity[$instance_size->size];
-
-                    if ($quantity > 0)
+                    if (in_array($instance_size->size, $instance_sizes))
                     {
                         $instance = new Instance();
                         $instance->setRam($instance_size->memoryGiB);
@@ -215,7 +242,7 @@ class EnvironmentController extends Controller
                         $instance->setPlataform(64);
                         $instance->setEnvironment($entity);
                         $instance->setDisk($this->getDiskByStorageGB($instance_size->storageGB));
-                        $instance->setQuantity($quantity);
+                        $instance->setQuantity(0);
 
                         $em->persist($instance);
                         $em->flush();
@@ -234,50 +261,53 @@ class EnvironmentController extends Controller
         }
     }
 
-    /**
-     * Calculated according to the heuristic
-     * TODO: refact the execute of heuristic
-     */
-    public function calculateAction($id)
+    private function parseHeuristicOutput($output)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('UffCalculatorBundle:Environment')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Environment entity.');
+        $parsed = array();
+        if (count($output) > 0)
+        {
+            foreach ($output as $row)
+            {
+                if (preg_match('/Package \[(\d+)\]/', $row, $matches))
+                {
+                    $package = $matches[1];
+                    $parsed['packages'][$package] = 0;
+                }
+                elseif (preg_match('/\[\d+\] = \d+/', $row, $matches))
+                {
+                    $parsed['packages'][$package]++;
+                }
+                elseif (preg_match('/\[Best\] Maximum time = (.+) hours/', $row, $matches))
+                {
+                    $parsed['best_maximum_time'] = $matches[1];
+                }
+                elseif (preg_match('/\[Best\] Monetary Cost = \$(.+)/', $row, $matches))
+                {
+                    $parsed['best_monetary_cost'] = $matches[1];
+                }
+            }
+        }
+        else
+        {
+            return array(
+                'best_maximum_time' => null,
+                'best_monetary_cost' => null
+            );
         }
 
-        $instances = $entity->getInstances();
+        return $parsed;
+    }
 
-        $heuristic_input = $this->renderView('UffCalculatorBundle:Environment:heuristic_input.txt.twig', array(
-            'entity'      => $entity,
-            'instances'   => $instances
-        ));
+    private function parseAllResultData($instances, $parsed_output)
+    {
+        if (!array_key_exists('packages', $parsed_output)) return $instances;
 
-        # config
-        $filesystem = new Filesystem();
-        $heuristic_dir = __DIR__.'/../../../../heuristic/';
-        $heuristic_filename = 'GraspCC';
-        $input_dir = '/tmp/';
-        $input_filename = sha1(time().microtime(true)).'.txt';
+        foreach ($instances as $package => $instance)
+        {
+            $instance->setQuantity($parsed_output['packages'][$package]);
+        }
 
-        # write input text file
-        $filesystem->dumpFile($input_dir.$input_filename, $heuristic_input);
-
-        # execute de heuristic
-        $cmd = $heuristic_dir.$heuristic_filename.' '.$input_dir.$input_filename.' 0.5 0.5';
-        $return = exec($cmd, $output, $return_var);
-
-        # delete the input file
-        $filesystem->remove($input_dir.$input_filename);
-
-        # show output
-        return $this->render('UffCalculatorBundle:Environment:heuristic_output.html.twig', array(
-            'entity'      => $entity,
-            'instances'   => $instances,
-            'output'      => $output
-        ));
+        return $instances;
     }
 
     /**
@@ -343,7 +373,7 @@ class EnvironmentController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('environment_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('environment_show', array('id' => $id)));
         }
 
         return $this->render('UffCalculatorBundle:Environment:edit.html.twig', array(
