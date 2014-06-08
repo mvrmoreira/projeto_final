@@ -62,6 +62,13 @@ class Instance
      */
     private $price;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity", type="integer")
+     */
+    private $quantity;
+
 
     /**
      * Get id
@@ -186,6 +193,22 @@ class Instance
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * @param int $quantity
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
     }
 
     public function getAws(){}

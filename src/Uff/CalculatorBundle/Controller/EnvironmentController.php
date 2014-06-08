@@ -215,6 +215,7 @@ class EnvironmentController extends Controller
                         $instance->setPlataform(64);
                         $instance->setEnvironment($entity);
                         $instance->setDisk($this->getDiskByStorageGB($instance_size->storageGB));
+                        $instance->setQuantity($quantity);
 
                         $em->persist($instance);
                         $em->flush();

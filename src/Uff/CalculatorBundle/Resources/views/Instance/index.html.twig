@@ -4,12 +4,13 @@
     <thead>
         <tr>
             <th>Id</th>
-            <th>Environment</th>
+            <th>Package</th>
             <th>Gflops</th>
             <th>RAM</th>
             <th>Plataform</th>
             <th>Disk</th>
             <th>Price</th>
+            <th>Quantity</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -17,12 +18,13 @@
     {% for entity in entities %}
         <tr>
             <td><a href="{{ path('instance_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-            <td>{{ entity.environment.name }}</td>
+            <td>{{ loop.index - 1  }}</td>
             <td>{{ entity.gflops }}</td>
             <td>{{ entity.ram }}</td>
             <td>{{ entity.plataform }}</td>
             <td>{{ entity.disk }}</td>
             <td>{{ entity.price }}</td>
+            <td>{{ entity.quantity }}</td>
             <td>
             <ul>
                 <li>

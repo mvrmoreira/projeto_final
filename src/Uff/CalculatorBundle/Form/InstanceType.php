@@ -65,6 +65,7 @@ class InstanceType extends AbstractType
             ))
             ->add('disk')
             ->add('price')
+            ->add('quantity')
             ->add('environment')
         ;
     }
