@@ -2,11 +2,14 @@
 
 namespace Uff\CalculatorBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Symfony\Component\Security\Acl\Exception\Exception;
 use Uff\CalculatorBundle\Entity\Environment;
+use Uff\CalculatorBundle\Entity\Instance;
 use Uff\CalculatorBundle\Form\EnvironmentType;
 
 /**
@@ -111,6 +114,123 @@ class EnvironmentController extends Controller
             'delete_form' => $deleteForm->createView(),
             'instances'   => $instances
         ));
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getAWSPricing()
+    {
+        $memcache = new \Memcache;
+        $memcache->connect('localhost', 11211) or die ("Could not connect");
+
+        if ($pricing = $memcache->get('aws_ec2_instances_pricing'))
+        {
+            return $pricing;
+        }
+
+        $subject = file_get_contents('http://a0.awsstatic.com/pricing/1.0.19/ec2/linux-od.min.js');
+        $pattern = '/callback\((.+)\);/';
+        preg_match($pattern, $subject, $matches);
+        $pricing = $matches[1];
+        $pricing = str_replace(',', ',"', $pricing);
+        $pricing = str_replace(':', '":', $pricing);
+        $pricing = str_replace('{', '{"', $pricing);
+        $pricing = str_replace('""', '"', $pricing);
+        $pricing = str_replace(',"{', ',{', $pricing);
+        $pricing = json_decode($pricing);
+        $pricing = $pricing->config->regions[7]->instanceTypes;
+
+        $memcache->set('aws_ec2_instances_pricing', $pricing, false, 86400) or die ("Failed to save data at the server");
+
+        return $pricing;
+    }
+
+    private function getGflopsByInstanceSize($size)
+    {
+        switch ($size)
+        {
+            case 't1.micro': return 19.2;
+            case 'm1.small': return 19.2;
+            case 'm3.medium': return 19.2;
+            case 'm3.large': return 38.4;
+            case 'm3.xlarge': return 76.8;
+            case 'm3.2xlarge': return 153.6;
+            default: throw new Exception(sprintf('Unable to find gflops to size "%s".', $size));
+        }
+    }
+
+    private function getDiskByStorageGB($storageGB)
+    {
+        preg_match('/(\d+) x (\d+)/', $storageGB, $matches);
+
+        if (array_key_exists(1, $matches) && array_key_exists(2, $matches))
+        {
+            return $matches[1] * $matches[2];
+        }
+        else
+        {
+            return 0;
+            //throw new Exception(sprintf('Unable to calculate storage with "%s".', $storageGB));
+        }
+    }
+
+    public function chooseInstancesAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('UffCalculatorBundle:Environment')->find($id);
+        $aws_ec2_instances = $this->getAWSPricing();
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Environment entity.');
+        }
+
+        $request = Request::createFromGlobals();
+
+        if ($request->getMethod() == 'POST')
+        {
+            $instances_quantity = $request->request->get('instances');
+
+            // delete previous instances
+            $instances = $em->getRepository('UffCalculatorBundle:Instance')->findBy(array('environment' => $id));
+            if (count($instances) > 0) foreach ($instances as $instance)
+            {
+                $em->remove($instance);
+                $em->flush();
+            }
+
+            // create new instances
+            foreach ($aws_ec2_instances as $instance_type)
+            {
+                foreach ($instance_type->sizes as $instance_size)
+                {
+                    $quantity = $instances_quantity[$instance_size->size];
+
+                    if ($quantity > 0)
+                    {
+                        $instance = new Instance();
+                        $instance->setRam($instance_size->memoryGiB);
+                        $instance->setPrice($instance_size->valueColumns[0]->prices->USD);
+                        $instance->setGflops($this->getGflopsByInstanceSize($instance_size->size));
+                        $instance->setPlataform(64);
+                        $instance->setEnvironment($entity);
+                        $instance->setDisk($this->getDiskByStorageGB($instance_size->storageGB));
+
+                        $em->persist($instance);
+                        $em->flush();
+                    }
+                }
+            }
+
+            return $this->redirect($this->generateUrl('environment_show', array('id' => $entity->getId())));
+        }
+        else
+        {
+            return $this->render('UffCalculatorBundle:Environment:aws_ec2_instances.html.twig', array(
+                'entity' => $entity,
+                'aws_ec2_instances' => $aws_ec2_instances
+            ));
+        }
     }
 
     /**
