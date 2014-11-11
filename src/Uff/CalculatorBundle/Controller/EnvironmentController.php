@@ -48,7 +48,7 @@ class EnvironmentController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('environment_choose_aws_ec2_instances', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('environment_choose_instances', array('id' => $entity->getId())));
         }
 
         return $this->render('UffCalculatorBundle:Environment:new.html.twig', array(
@@ -175,6 +175,24 @@ class EnvironmentController extends Controller
         return $pricing;
     }
 
+    private function getAzurePricing()
+    {
+        $json_pricing = file_get_contents('https://www.parsehub.com/api/scrapejob/dl?api_key=tPWNsl1yTOOoXWcYuZ0dVBkVWZuhok9r&run_token=t6IxCewQa2S9vv5yNNP-XToP_5o4hHJn&format=json&raw=1');
+
+        $pricing = json_decode($json_pricing);
+
+        return $pricing->instances;
+    }
+
+    private function getGooglePricing()
+    {
+        $json_pricing = file_get_contents('https://www.parsehub.com/api/scrapejob/dl?api_key=tPWNsl1yTOOoXWcYuZ0dVBkVWZuhok9r&run_token=tCFRfqrYjbKdLwCg_rtbcGQ3m8GmJMwf&format=json&raw=1');
+
+        $pricing = json_decode($json_pricing);
+
+        return $pricing->instance_types;
+    }
+
     private function getGflopsByInstanceSize($size)
     {
         switch ($size)
@@ -209,6 +227,8 @@ class EnvironmentController extends Controller
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('UffCalculatorBundle:Environment')->find($id);
         $aws_ec2_instances = $this->getAWSPricing();
+        $azure_instances = $this->getAzurePricing();
+        $google_instances = $this->getGooglePricing();
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Environment entity.');
@@ -255,9 +275,11 @@ class EnvironmentController extends Controller
         }
         else
         {
-            return $this->render('UffCalculatorBundle:Environment:aws_ec2_instances.html.twig', array(
+            return $this->render('UffCalculatorBundle:Environment:choose_instances.html.twig', array(
                 'entity' => $entity,
-                'aws_ec2_instances' => $aws_ec2_instances
+                'aws_ec2_instances' => $aws_ec2_instances,
+                'azure_instances' => $azure_instances,
+                'google_instances' => $google_instances
             ));
         }
     }

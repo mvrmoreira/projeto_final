@@ -33,6 +33,6 @@ environment_calculate:
     pattern:  /{id}/calculate
     defaults: { _controller: "UffCalculatorBundle:Environment:calculate" }
 
-environment_choose_aws_ec2_instances:
-    pattern:  /{id}/choose-aws-ec2-instances
+environment_choose_instances:
+    pattern:  /{id}/choose-instances
     defaults: { _controller: "UffCalculatorBundle:Environment:chooseInstances" }
