@@ -21,7 +21,7 @@ class EnvironmentType extends AbstractType
             ->add('totalRAM', 'number', array('label' => 'Total RAM memory in GBs that the application needs'))
             ->add('maximumDisk', 'number', array('label' => 'Maximum disk capacity in GBs that the application needs'))
             ->add('maximumTime', 'number', array('label' => 'Maximum time of execution in hours'))
-            ->add('maximumInstances', 'number', array('label' => 'Maximum instances can be used'))
+            ->add('maximumInstances', 'number', array('label' => 'Maximum instances that can be used'))
             ->add('storagePrice', 'number', array('label' => 'Price per GB of data storaged in plataform Amazon S3'))
             ->add('averageDataTransferedSize', 'number', array('precision' => 10, 'label' => 'Average size of data transferred in GBs'))
         ;
