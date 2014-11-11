@@ -84,6 +84,13 @@ class Environment
      */
     private $storagePrice;
 
+    /**
+     * the average size of data transferred (GBs)
+     * @var float
+     * @ORM\Column(name="average_data_transfered_size", type="float")
+     */
+    private $averageDataTransferedSize;
+
 
     /**
      * Constructor
@@ -321,5 +328,21 @@ class Environment
     public function getStoragePrice()
     {
         return $this->storagePrice;
+    }
+
+    /**
+     * @param float $averageDataTransferedSize
+     */
+    public function setAverageDataTransferedSize($averageDataTransferedSize)
+    {
+        $this->averageDataTransferedSize = $averageDataTransferedSize;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageDataTransferedSize()
+    {
+        return $this->averageDataTransferedSize;
     }
 }

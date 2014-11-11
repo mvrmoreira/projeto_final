@@ -18,11 +18,12 @@ class EnvironmentType extends AbstractType
             ->add('name')
             ->add('maximumCost')
             ->add('minimumGflops')
-            ->add('totalRAM')
+            ->add('totalRAM', 'number', array('label' => 'Total RAM'))
             ->add('maximumDisk')
             ->add('maximumTime')
             ->add('maximumInstances')
             ->add('storagePrice')
+            ->add('averageDataTransferedSize', 'number', array('precision' => 10))
         ;
     }
     
