@@ -15,15 +15,15 @@ class EnvironmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('maximumCost')
-            ->add('minimumGflops')
-            ->add('totalRAM', 'number', array('label' => 'Total RAM'))
-            ->add('maximumDisk')
-            ->add('maximumTime')
-            ->add('maximumInstances')
-            ->add('storagePrice')
-            ->add('averageDataTransferedSize', 'number', array('precision' => 10))
+            ->add('name', 'text', array('label' => 'Application name'))
+            ->add('maximumCost', 'text', array('label' => 'Maximum cost that can be paid'))
+            ->add('minimumGflops', 'number', array('label' => 'Minimum Gflops that application need'))
+            ->add('totalRAM', 'number', array('label' => 'Total RAM memory in GBs that application need'))
+            ->add('maximumDisk', 'number', array('label' => 'Maximum disk capacity in GBs that application need'))
+            ->add('maximumTime', 'number', array('label' => 'Maximum execution time in hours'))
+            ->add('maximumInstances', 'number', array('label' => 'Maximum instances can be utilized'))
+            ->add('storagePrice', 'number', array('label' => 'Price per GB of data storaged in plataform Amazon S3'))
+            ->add('averageDataTransferedSize', 'number', array('precision' => 10, 'label' => 'Average size of data transferred in GBs'))
         ;
     }
     
