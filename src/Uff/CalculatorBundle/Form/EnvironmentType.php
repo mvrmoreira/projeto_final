@@ -17,11 +17,11 @@ class EnvironmentType extends AbstractType
         $builder
             ->add('name', 'text', array('label' => 'Application name'))
             ->add('maximumCost', 'text', array('label' => 'Maximum cost that can be paid'))
-            ->add('minimumGflops', 'number', array('label' => 'Minimum Gflops that application need'))
-            ->add('totalRAM', 'number', array('label' => 'Total RAM memory in GBs that application need'))
-            ->add('maximumDisk', 'number', array('label' => 'Maximum disk capacity in GBs that application need'))
-            ->add('maximumTime', 'number', array('label' => 'Maximum execution time in hours'))
-            ->add('maximumInstances', 'number', array('label' => 'Maximum instances can be utilized'))
+            ->add('minimumGflops', 'number', array('label' => 'Minimum Gflops that the application needs'))
+            ->add('totalRAM', 'number', array('label' => 'Total RAM memory in GBs that the application needs'))
+            ->add('maximumDisk', 'number', array('label' => 'Maximum disk capacity in GBs that the application needs'))
+            ->add('maximumTime', 'number', array('label' => 'Maximum time of execution in hours'))
+            ->add('maximumInstances', 'number', array('label' => 'Maximum instances can be used'))
             ->add('storagePrice', 'number', array('label' => 'Price per GB of data storaged in plataform Amazon S3'))
             ->add('averageDataTransferedSize', 'number', array('precision' => 10, 'label' => 'Average size of data transferred in GBs'))
         ;
