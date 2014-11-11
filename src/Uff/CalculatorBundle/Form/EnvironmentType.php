@@ -22,6 +22,7 @@ class EnvironmentType extends AbstractType
             ->add('maximumDisk')
             ->add('maximumTime')
             ->add('maximumInstances')
+            ->add('storagePrice')
         ;
     }
     

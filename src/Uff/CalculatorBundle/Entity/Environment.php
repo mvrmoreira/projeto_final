@@ -77,6 +77,13 @@ class Environment
      */
     private $maximumInstances;
 
+    /**
+     * the price per GB of data storaged in plataform Amazon S3
+     * @var float
+     * @ORM\Column(name="storage_price", type="float")
+     */
+    private $storagePrice;
+
 
     /**
      * Constructor
@@ -298,5 +305,21 @@ class Environment
     public function getMaximumInstances()
     {
         return $this->maximumInstances;
+    }
+
+    /**
+     * @param float $storagePrice
+     */
+    public function setStoragePrice($storagePrice)
+    {
+        $this->storagePrice = $storagePrice;
+    }
+
+    /**
+     * @return float
+     */
+    public function getStoragePrice()
+    {
+        return $this->storagePrice;
     }
 }

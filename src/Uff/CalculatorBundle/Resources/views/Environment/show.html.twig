@@ -1,7 +1,7 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Environment</h1>
+    <h1>Environment Application Requirements</h1>
 
     <table class="table table-striped table-hover table-condensed">
         <tbody>
@@ -10,32 +10,36 @@
                 <td>{{ entity.id }}</td>
             </tr>
             <tr>
-                <th>Name</th>
+                <th>Application name</th>
                 <td>{{ entity.name }}</td>
             </tr>
             <tr>
-                <th>Maximum Cost</th>
+                <th>Maximum cost</th>
                 <td>$ {{ entity.maximumCost }}</td>
             </tr>
             <tr>
-                <th>Minimum Gflops</th>
+                <th>Minimum Gflops that application need</th>
                 <td>{{ entity.minimumGflops }}</td>
             </tr>
             <tr>
-                <th>Total RAM</th>
+                <th>Total RAM memory that application need</th>
                 <td>{{ entity.totalRAM }} GBs</td>
             </tr>
             <tr>
-                <th>Maximum Disk</th>
+                <th>Maximum disk capacity that application need</th>
                 <td>{{ entity.maximumDisk }} GBs</td>
             </tr>
             <tr>
-                <th>Maximum Time</th>
+                <th>Maximum execution time</th>
                 <td>{{ entity.maximumTime }} hours</td>
             </tr>
             <tr>
-                <th>Maximum Instances</th>
+                <th>Maximum instances</th>
                 <td>{{ entity.maximumInstances }}</td>
+            </tr>
+            <tr>
+                <th>Price per GB of data storage in plataform Amazon S3</th>
+                <td>$ {{ entity.storagePrice }}</td>
             </tr>
         </tbody>
     </table>
