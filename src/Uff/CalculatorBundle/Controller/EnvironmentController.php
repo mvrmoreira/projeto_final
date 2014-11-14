@@ -117,7 +117,7 @@ class EnvironmentController extends Controller
         # config
         $filesystem = new Filesystem();
         $heuristic_dir = __DIR__.'/../../../../heuristic/';
-        $heuristic_filename = 'GraspCC';
+        $heuristic_filename = 'GraspCC-fed';
         $input_dir = '/tmp/';
         $input_filename = sha1(time().microtime(true)).'.txt';
 
@@ -150,8 +150,7 @@ class EnvironmentController extends Controller
      */
     private function getAWSPricing()
     {
-        $memcache = new \Memcache;
-        $memcache->connect('localhost', 11211) or die ("Could not connect");
+        $memcache = $this->getMemCache();
 
         if ($pricing = $memcache->get('aws_ec2_instances_pricing'))
         {
@@ -175,24 +174,75 @@ class EnvironmentController extends Controller
         return $pricing;
     }
 
+    /**
+     * @return array|string
+     */
     private function getAzurePricing()
     {
+        // conecta no cache
+        $memcache = $this->getMemCache();
+
+        // verifica se já existe no cache
+        if ($pricing = $memcache->get('azure_pricing'))
+        {
+            return $pricing;
+        }
+
+        // caso nao exista faz o fetch
         $json_pricing = file_get_contents('https://www.parsehub.com/api/scrapejob/dl?api_key=tPWNsl1yTOOoXWcYuZ0dVBkVWZuhok9r&run_token=t6IxCewQa2S9vv5yNNP-XToP_5o4hHJn&format=json&raw=1');
 
+        // faz o decode do json
         $pricing = json_decode($json_pricing);
 
+        // armazena no cache
+        $memcache->set('azure_pricing', $pricing->instances, false, 86400) or die ("Failed to save data at the server");
+
+        // retorna pricing
         return $pricing->instances;
     }
 
+    /**
+     * @return array|string
+     */
     private function getGooglePricing()
     {
+        // conecta no cache
+        $memcache = $this->getMemCache();
+
+        // verifica se já existe no cache
+        if ($pricing = $memcache->get('google_pricing'))
+        {
+            return $pricing;
+        }
+
+        // caso nao exista faz o fetch
         $json_pricing = file_get_contents('https://www.parsehub.com/api/scrapejob/dl?api_key=tPWNsl1yTOOoXWcYuZ0dVBkVWZuhok9r&run_token=tCFRfqrYjbKdLwCg_rtbcGQ3m8GmJMwf&format=json&raw=1');
 
+        // faz o decode do json
         $pricing = json_decode($json_pricing);
+
+        // armazena no cache
+        $memcache->set('google_pricing', $pricing->instance_types, false, 86400) or die ("Failed to save data at the server");
 
         return $pricing->instance_types;
     }
 
+    /**
+     * @return \Memcache
+     */
+    private function getMemCache()
+    {
+        $memcache = new \Memcache;
+        $memcache->connect('localhost', 11211) or die ("Could not connect");
+
+        return $memcache;
+    }
+
+    /**
+     * @param $size
+     * @return float
+     * @throws \Symfony\Component\Security\Acl\Exception\Exception
+     */
     private function getGflopsByInstanceSize($size)
     {
         switch ($size)
@@ -207,6 +257,10 @@ class EnvironmentController extends Controller
         }
     }
 
+    /**
+     * @param $storageGB
+     * @return int
+     */
     private function getDiskByStorageGB($storageGB)
     {
         preg_match('/(\d+) x (\d+)/', $storageGB, $matches);
@@ -222,13 +276,18 @@ class EnvironmentController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
     public function chooseInstancesAction($id)
     {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('UffCalculatorBundle:Environment')->find($id);
         $aws_ec2_instances = $this->getAWSPricing();
-        $azure_instances = $this->getAzurePricing();
-        $google_instances = $this->getGooglePricing();
+        $azure_pricing = $this->getAzurePricing();
+        $google_pricing = $this->getGooglePricing();
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Environment entity.');
@@ -238,7 +297,7 @@ class EnvironmentController extends Controller
 
         if ($request->getMethod() == 'POST')
         {
-            $instance_sizes = $request->request->get('instances');
+            $selected_instances = $request->request->get('instances');
 
             // delete previous instances
             $instances = $em->getRepository('UffCalculatorBundle:Instance')->findBy(array('environment' => $id));
@@ -248,27 +307,22 @@ class EnvironmentController extends Controller
                 $em->flush();
             }
 
-            // create new instances
-            foreach ($aws_ec2_instances as $instance_type)
+            // create aws new instances
+            if (array_key_exists('aws', $selected_instances))
             {
-                foreach ($instance_type->sizes as $instance_size)
-                {
-                    if (in_array($instance_size->size, $instance_sizes))
-                    {
-                        $instance = new Instance();
-                        $instance->setName($instance_size->size);
-                        $instance->setRam($instance_size->memoryGiB);
-                        $instance->setPrice($instance_size->valueColumns[0]->prices->USD);
-                        $instance->setGflops($this->getGflopsByInstanceSize($instance_size->size));
-                        $instance->setPlataform(64);
-                        $instance->setEnvironment($entity);
-                        $instance->setDisk($this->getDiskByStorageGB($instance_size->storageGB));
-                        $instance->setQuantity(0);
+                $this->createAmazonInstances($em, $entity, $selected_instances['aws'], $aws_ec2_instances);
+            }
 
-                        $em->persist($instance);
-                        $em->flush();
-                    }
-                }
+            // create new azure instances
+            if (array_key_exists('azure', $selected_instances))
+            {
+                $this->createAzureInstances($em, $entity, $selected_instances['azure'], $azure_pricing);
+            }
+
+            // create new google instances
+            if (array_key_exists('google', $selected_instances))
+            {
+                $this->createGoogleInstances($em, $entity, $selected_instances['google'], $google_pricing);
             }
 
             return $this->redirect($this->generateUrl('environment_show', array('id' => $entity->getId())));
@@ -278,12 +332,104 @@ class EnvironmentController extends Controller
             return $this->render('UffCalculatorBundle:Environment:choose_instances.html.twig', array(
                 'entity' => $entity,
                 'aws_ec2_instances' => $aws_ec2_instances,
-                'azure_instances' => $azure_instances,
-                'google_instances' => $google_instances
+                'azure_instances' => $azure_pricing,
+                'google_instances' => $google_pricing
             ));
         }
     }
 
+    /**
+     * @param $em
+     * @param $entity
+     * @param $selected_instances
+     * @param $aws_ec2_instances
+     */
+    private function createAmazonInstances($em, $entity, $selected_instances, $aws_ec2_instances)
+    {
+        foreach ($aws_ec2_instances as $instance_type)
+        {
+            foreach ($instance_type->sizes as $instance_size)
+            {
+                if (in_array($instance_size->size, $selected_instances))
+                {
+                    $instance = new Instance();
+                    $instance->setName($instance_size->size);
+                    $instance->setRam($instance_size->memoryGiB);
+                    $instance->setPrice($instance_size->valueColumns[0]->prices->USD);
+                    $instance->setGflops($this->getGflopsByInstanceSize($instance_size->size));
+                    $instance->setPlataform(64);
+                    $instance->setEnvironment($entity);
+                    $instance->setDisk($this->getDiskByStorageGB($instance_size->storageGB));
+                    $instance->setQuantity(0);
+
+                    $em->persist($instance);
+                    $em->flush();
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $em
+     * @param $entity
+     * @param $selected_instances
+     * @param $pricing
+     */
+    private function createAzureInstances($em, $entity, $selected_instances, $pricing)
+    {
+        foreach ($pricing as $instance_type)
+        {
+            if (in_array($instance_type->name, $selected_instances))
+            {
+                $instance = new Instance();
+                $instance->setName($instance_type->name);
+                $instance->setRam($instance_type->ram);
+                $instance->setPrice($instance_type->price);
+                $instance->setGflops($instance_type->cores * 23.464);
+                $instance->setPlataform(64);
+                $instance->setEnvironment($entity);
+                $instance->setDisk($instance_type->disk);
+                $instance->setQuantity(0);
+
+                $em->persist($instance);
+                $em->flush();
+            }
+        }
+    }
+
+
+    /**
+     * @param $em
+     * @param $entity
+     * @param $selected_instances
+     * @param $pricing
+     */
+    private function createGoogleInstances($em, $entity, $selected_instances, $pricing)
+    {
+        foreach ($pricing as $instance_type)
+        {
+            if (in_array($instance_type->name, $selected_instances))
+            {
+                $instance = new Instance();
+                $instance->setName($instance_type->name);
+                $instance->setRam($instance_type->memory);
+                $instance->setPrice($instance_type->typical_price);
+                $instance->setGflops($instance_type->virtual_cores * 20.8);
+                $instance->setPlataform(64);
+                $instance->setEnvironment($entity);
+                $instance->setDisk(0); // TODO: disk??!?!
+                $instance->setQuantity(0);
+
+                $em->persist($instance);
+                $em->flush();
+            }
+        }
+    }
+
+    /**
+     * @param $output
+     * @return array
+     */
     private function parseHeuristicOutput($output)
     {
         $parsed = array();
@@ -321,6 +467,11 @@ class EnvironmentController extends Controller
         return $parsed;
     }
 
+    /**
+     * @param $instances
+     * @param $parsed_output
+     * @return mixed
+     */
     private function parseAllResultData($instances, $parsed_output)
     {
         if (!array_key_exists('packages', $parsed_output)) return $instances;

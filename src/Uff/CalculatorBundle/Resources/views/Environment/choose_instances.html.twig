@@ -24,7 +24,7 @@
                 <tr>
                     <td>
                         <div class="checkbox">
-                            <input type="checkbox" name="instances[]" value="{{ instance_size.size }}" />
+                            <input type="checkbox" name="instances[aws][]" value="{{ instance_size.size }}" />
                         </div>
                     </td>
                     <td>{{ instance_size.size }}</td>
@@ -57,7 +57,7 @@
                 <tr>
                     <td>
                         <div class="checkbox">
-                            <input type="checkbox" name="instances[]" value="{{ instance.name }}" />
+                            <input type="checkbox" name="instances[azure][]" value="{{ instance.name }}" />
                         </div>
                     </td>
                     <td>{{ instance.name }}</td>
@@ -88,7 +88,7 @@
                 <tr>
                     <td>
                         <div class="checkbox">
-                            <input type="checkbox" name="instances[]" value="{{ instance.name }}" />
+                            <input type="checkbox" name="instances[google][]" value="{{ instance.name }}" />
                         </div>
                     </td>
                     <td>{{ instance.name }}</td>

@@ -210,6 +210,9 @@ class Instance
      */
     public function setPrice($price)
     {
+        $price = str_replace('$', '', $price);
+        $price = str_replace(',', '.', $price);
+
         $this->price = $price;
 
         return $this;
