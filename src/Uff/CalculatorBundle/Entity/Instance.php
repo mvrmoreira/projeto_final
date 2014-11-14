@@ -76,6 +76,13 @@ class Instance
      */
     private $quantity;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="provider", type="string")
+     */
+    private $provider;
+
 
     /**
      * Get id
@@ -268,5 +275,21 @@ class Instance
     public function getEnvironment()
     {
         return $this->environment;
+    }
+
+    /**
+     * @param string $provider
+     */
+    public function setProvider($provider)
+    {
+        $this->provider = $provider;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProvider()
+    {
+        return $this->provider;
     }
 }

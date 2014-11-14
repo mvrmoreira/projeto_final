@@ -93,7 +93,6 @@ class EnvironmentController extends Controller
 
     /**
      * Finds and displays a Environment entity.
-     *
      */
     public function showAction($id)
     {
@@ -106,13 +105,18 @@ class EnvironmentController extends Controller
         }
 
         $instances = $entity->getInstances();
+        $providers = $entity->getProviders();
 
         $deleteForm = $this->createDeleteForm($id);
 
         $heuristic_input = $this->renderView('UffCalculatorBundle:Environment:heuristic_input.txt.twig', array(
             'entity'      => $entity,
-            'instances'   => $instances
+            'instances'   => $instances,
+            'providers'   => $providers
         ));
+
+        echo $heuristic_input;
+        //die();
 
         # config
         $filesystem = new Filesystem();
@@ -128,6 +132,8 @@ class EnvironmentController extends Controller
         $cmd = $heuristic_dir.$heuristic_filename.' '.$input_dir.$input_filename.' 0.5 0.5';
         $return = exec($cmd, $output, $return_var);
 
+        die(print_r($output));
+
         # parse output
         $parsed_output = $this->parseHeuristicOutput($output);
 
@@ -141,7 +147,7 @@ class EnvironmentController extends Controller
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
             'instances'   => $instances,
-            'output'      => $parsed_output,
+            'output'      => $parsed_output
         ));
     }
 
@@ -346,6 +352,11 @@ class EnvironmentController extends Controller
      */
     private function createAmazonInstances($em, $entity, $selected_instances, $aws_ec2_instances)
     {
+        // cria entrada na tabela de associação entre provider e environment
+        $environmentProvider = new \Uff\CalculatorBundle\Entity\EnvironmentProvider();
+        $environmentProvider->setName("aws");
+        $environmentProvider->setEnvironment($entity);
+
         foreach ($aws_ec2_instances as $instance_type)
         {
             foreach ($instance_type->sizes as $instance_size)
@@ -361,12 +372,17 @@ class EnvironmentController extends Controller
                     $instance->setEnvironment($entity);
                     $instance->setDisk($this->getDiskByStorageGB($instance_size->storageGB));
                     $instance->setQuantity(0);
+                    $instance->setProvider("aws");
+
+                    $environmentProvider->incrementInstanceCount();
 
                     $em->persist($instance);
-                    $em->flush();
                 }
             }
         }
+
+        $em->persist($environmentProvider);
+        $em->flush();
     }
 
     /**
@@ -377,6 +393,11 @@ class EnvironmentController extends Controller
      */
     private function createAzureInstances($em, $entity, $selected_instances, $pricing)
     {
+        // cria entrada na tabela de associação entre provider e environment
+        $environmentProvider = new \Uff\CalculatorBundle\Entity\EnvironmentProvider();
+        $environmentProvider->setName("azure");
+        $environmentProvider->setEnvironment($entity);
+
         foreach ($pricing as $instance_type)
         {
             if (in_array($instance_type->name, $selected_instances))
@@ -390,11 +411,16 @@ class EnvironmentController extends Controller
                 $instance->setEnvironment($entity);
                 $instance->setDisk($instance_type->disk);
                 $instance->setQuantity(0);
+                $instance->setProvider("azure");
+
+                $environmentProvider->incrementInstanceCount();
 
                 $em->persist($instance);
-                $em->flush();
             }
         }
+
+        $em->persist($environmentProvider);
+        $em->flush();
     }
 
 
@@ -406,6 +432,11 @@ class EnvironmentController extends Controller
      */
     private function createGoogleInstances($em, $entity, $selected_instances, $pricing)
     {
+        // cria entrada na tabela de associação entre provider e environment
+        $environmentProvider = new \Uff\CalculatorBundle\Entity\EnvironmentProvider();
+        $environmentProvider->setName("google");
+        $environmentProvider->setEnvironment($entity);
+
         foreach ($pricing as $instance_type)
         {
             if (in_array($instance_type->name, $selected_instances))
@@ -419,11 +450,17 @@ class EnvironmentController extends Controller
                 $instance->setEnvironment($entity);
                 $instance->setDisk(0); // TODO: disk??!?!
                 $instance->setQuantity(0);
+                $instance->setProvider("google");
+
+                $environmentProvider->incrementInstanceCount();
 
                 $em->persist($instance);
                 $em->flush();
             }
         }
+
+        $em->persist($environmentProvider);
+        $em->flush();
     }
 
     /**

@@ -1,7 +1,11 @@
 # - the available packages:
 
+# the cloud provider number
+provider {{ providers.count }}
+
 # the package types number
-package {{ instances.count }}
+package {% for provider in providers %}{{ provider.instanceCount }} {% endfor %}
+
 
 # Gflops of each package type
 Gflops {% for instance in instances %}{{ instance.gflops }} {% endfor %}
@@ -22,6 +26,12 @@ disk {% for instance in instances %}{{ instance.disk }} {% endfor %}
 # the price per time unit of each package type
 price {% for instance in instances %}{{ instance.price }} {% endfor %}
 
+# the price per GB of data transferred: between different clouds and within the same cloud
+transfer 0.12 0.01 0.12 0.0
+
+# the price per GB of data storaged in plataform Amazon S3
+storage {{ entity.storagePrice }}
+
 
 # - the client requirements:
 
@@ -41,4 +51,8 @@ D {{ entity.maximumDisk }}
 T {{ entity.maximumTime }}
 
 # the maximum package number that it can be utilized
-P {{ entity.maximumInstances }}
+# P {{ entity.maximumInstances }}
+P 20 20
+
+# the average size of data transferred (GBs)
+S {{ entity.averageDataTransferedSize }}

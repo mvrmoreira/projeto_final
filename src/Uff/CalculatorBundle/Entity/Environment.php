@@ -29,6 +29,13 @@ class Environment
     protected $instances;
 
     /**
+     * @var
+     *
+     * @ORM\OneToMany(targetEntity="EnvironmentProvider", mappedBy="environment")
+     */
+    protected $providers;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string")
@@ -113,6 +120,7 @@ class Environment
      *
      * @param \Uff\CalculatorBundle\Entity\Instance $instances
      * @return Environment
+     * @return $this
      */
     public function addInstance(\Uff\CalculatorBundle\Entity\Instance $instances)
     {
@@ -293,8 +301,9 @@ class Environment
     /**
      * Set maximumInstances
      *
+     * @param $maximumInstances
      * @param integer $maximumInstances
-     * @return Environment
+     * @return int
      */
     public function setMaximumInstances($maximumInstances)
     {
@@ -315,6 +324,7 @@ class Environment
     }
 
     /**
+     * @param $storagePrice
      * @param float $storagePrice
      */
     public function setStoragePrice($storagePrice)
@@ -331,6 +341,7 @@ class Environment
     }
 
     /**
+     * @param $averageDataTransferedSize
      * @param float $averageDataTransferedSize
      */
     public function setAverageDataTransferedSize($averageDataTransferedSize)
@@ -345,4 +356,13 @@ class Environment
     {
         return $this->averageDataTransferedSize;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getProviders()
+    {
+        return $this->providers;
+    }
+
 }
