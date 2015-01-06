@@ -26,6 +26,7 @@ disk {% for instance in instances %}{{ instance.disk }} {% endfor %}
 # the price per time unit of each package type
 price {% for instance in instances %}{{ instance.price }} {% endfor %}
 
+
 # the price per GB of data transferred: between different clouds and within the same cloud
 transfer 0.12 0.01 0.12 0.0
 

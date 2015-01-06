@@ -313,6 +313,14 @@ class EnvironmentController extends Controller
                 $em->flush();
             }
 
+            // delete previous instance providers
+            $providers = $em->getRepository('UffCalculatorBundle:EnvironmentProvider')->findBy(array('environment' => $id));
+            if (count($providers) > 0) foreach ($providers as $provider)
+            {
+                $em->remove($provider);
+                $em->flush();
+            }
+
             // create aws new instances
             if (array_key_exists('aws', $selected_instances))
             {
@@ -448,7 +456,7 @@ class EnvironmentController extends Controller
                 $instance->setGflops($instance_type->virtual_cores * 20.8);
                 $instance->setPlataform(64);
                 $instance->setEnvironment($entity);
-                $instance->setDisk(0); // TODO: disk??!?!
+                $instance->setDisk(20); // TODO: disk??!?!
                 $instance->setQuantity(0);
                 $instance->setProvider("google");
 
