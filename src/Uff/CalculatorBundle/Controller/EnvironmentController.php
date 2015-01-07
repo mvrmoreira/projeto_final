@@ -115,7 +115,7 @@ class EnvironmentController extends Controller
             'providers'   => $providers
         ));
 
-        echo $heuristic_input;
+//        echo $heuristic_input;
         //die();
 
         # config
@@ -131,8 +131,6 @@ class EnvironmentController extends Controller
         # execute de heuristic
         $cmd = $heuristic_dir.$heuristic_filename.' '.$input_dir.$input_filename.' 0.5 0.5';
         $return = exec($cmd, $output, $return_var);
-
-        die(print_r($output));
 
         # parse output
         $parsed_output = $this->parseHeuristicOutput($output);
@@ -456,7 +454,7 @@ class EnvironmentController extends Controller
                 $instance->setGflops($instance_type->virtual_cores * 20.8);
                 $instance->setPlataform(64);
                 $instance->setEnvironment($entity);
-                $instance->setDisk(20); // TODO: disk??!?!
+                $instance->setDisk(10); // TODO: disk??!?!
                 $instance->setQuantity(0);
                 $instance->setProvider("google");
 
@@ -499,15 +497,24 @@ class EnvironmentController extends Controller
                 {
                     $parsed['best_monetary_cost'] = $matches[1];
                 }
+                elseif (preg_match('/\[Best\] Communication Cost = \$(.+)/', $row, $matches))
+                {
+                    $parsed['best_communication_cost'] = $matches[1];
+                }
             }
         }
         else
         {
             return array(
                 'best_maximum_time' => null,
-                'best_monetary_cost' => null
+                'best_monetary_cost' => null,
+                'best_communication_cost' => null
             );
         }
+
+//        print_r(array());
+//        print_r($output);
+//        print_r($parsed);die();
 
         return $parsed;
     }
