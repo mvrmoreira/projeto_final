@@ -514,7 +514,8 @@ class EnvironmentController extends Controller
 
 //        print_r(array());
 //        print_r($output);
-//        print_r($parsed);die();
+//        print_r($parsed);
+//        die();
 
         return $parsed;
     }
