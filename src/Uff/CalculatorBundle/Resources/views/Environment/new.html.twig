@@ -3,15 +3,15 @@
 {% form_theme form 'UffCalculatorBundle:Form:fields.html.twig' %}
 
 {% block body -%}
-    <h1>Environment creation</h1>
+    <h1>Application creation</h1>
 
     {{ form(form) }}
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('environment') }}">
-            Back to the list
-        </a>
-    </li>
-</ul>
+    <ul class="record_actions">
+        <li>
+            <a class="btn btn-primary" href="{{ path('environment') }}">
+                Back to the list
+            </a>
+        </li>
+    </ul>
 {% endblock %}
