@@ -44,7 +44,11 @@
                 $(function(){
                     $(".btn-delete-application").click(function(event){
                         event.preventDefault();
-                        $("#form_submit").click();
+
+                        if (confirm("Are you sure?"))
+                        {
+                            $("#form_submit").click();
+                        }
                     });
                 });
             </script>
